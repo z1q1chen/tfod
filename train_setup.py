@@ -214,11 +214,9 @@ if __name__ == '__main__':
     num_classes=1
 
     print('writing custom configuration file')
-    print(pipeline_fname)
     with open(pipeline_fname) as f:
         s = f.read()
     with open('pipeline_file.config', 'w') as f:
-        print("hello")
         # fine_tune_checkpoint
         s = re.sub('fine_tune_checkpoint: ".*?"',
                   'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
@@ -250,3 +248,4 @@ if __name__ == '__main__':
             'fine_tune_checkpoint_type: "classification"', 'fine_tune_checkpoint_type: "{}"'.format('detection'), s)
             
         f.write(s)
+    print("Done")
