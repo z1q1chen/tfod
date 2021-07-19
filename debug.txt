@@ -1,0 +1,4 @@
+1. numpy.ndarray size changed, may indicate binary incompatibility. Expected 88 from C header, got 80 from PyObject
+
+    pip uninstall numpy
+    pip install numpy==1.20.0 (or other compatible version)

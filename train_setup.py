@@ -13,6 +13,8 @@ from PIL import Image, ImageDraw, ImageFont
 import wget
 import tensorflow as tf
 import tarfile
+import re
+
 from object_detection.utils import label_map_util
 from object_detection.utils import config_util
 from object_detection.utils import visualization_utils as viz_utils
@@ -165,10 +167,18 @@ def plot_detections(image_np,
   else:
     plt.imshow(image_np_with_annotations)
 
+def get_num_classes(pbtxt_fname):
+    
+    label_map = label_map_util.load_labelmap(pbtxt_fname)
+    categories = label_map_util.convert_label_map_to_categories(
+        label_map, max_num_classes=90, use_display_name=True)
+    category_index = label_map_util.create_category_index(categories)
+    return len(category_index.keys())
+
 if __name__ == '__main__':
     test_record_fname = '/data/valid/Spaghetti.tfrecord'
     train_record_fname = '/data/train/Spaghetti.tfrecord'
-    label_map_pbtxt_fname = '/data/train/Spaghetti_label_map.pbtxt'
+    label_map_pbtxt_fname = '/data/valid/Spaghetti_label_map.pbtxt'
 
     ##change chosen model to deploy different models available in the TF2 object detection zoo
     
@@ -185,9 +195,61 @@ if __name__ == '__main__':
     base_pipeline_file = MODELS_CONFIG[CHOSEN_MODEL]['base_pipeline_file']
     batch_size = MODELS_CONFIG[CHOSEN_MODEL]['batch_size'] #if you can fit a large batch in memory, it may speed up your training
 
-    download_tar = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/' + pretrained_checkpoint
     save_location = 'research/deploy'
-    filename = wget.download(download_tar, out=save_location)
-    tar = tarfile.open(f'{save_location}/{pretrained_checkpoint}')
-    tar.extractall()
-    tar.close()
+    if not os.path.exists(os.path.join(save_location, pretrained_checkpoint)):
+        download_tar = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/' + pretrained_checkpoint
+        tar_filename = wget.download(download_tar, out=save_location)
+        tar = tarfile.open(f'{save_location}/{pretrained_checkpoint}')
+        tar.extractall(path=save_location)
+        tar.close()
+    
+    if not os.path.exists(os.path.join(save_location, base_pipeline_file)):
+        download_config = 'https://raw.githubusercontent.com/tensorflow/models/master/research/object_detection/configs/tf2/' + base_pipeline_file
+        config_filename = wget.download(download_config, out=save_location)
+
+    #prepare
+    pipeline_fname = 'research/deploy/' + base_pipeline_file
+    fine_tune_checkpoint = 'research/deploy/' + model_name + '/checkpoint/ckpt-0'
+    # num_classes = get_num_classes(label_map_pbtxt_fname)
+    num_classes=1
+
+    print('writing custom configuration file')
+
+    with open(pipeline_fname) as f:
+        s = f.read()
+    with open('pipeline_file.config', 'w') as f:
+        
+        # fine_tune_checkpoint
+        s = re.sub('fine_tune_checkpoint: ".*?"',
+                  'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
+        
+        # tfrecord files train and test.
+        s = re.sub(
+            '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/train)(.*?")', 'input_path: "{}"'.format(train_record_fname), s)
+        s = re.sub(
+            '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/val)(.*?")', 'input_path: "{}"'.format(test_record_fname), s)
+
+        # label_map_path
+        s = re.sub(
+            'label_map_path: ".*?"', 'label_map_path: "{}"'.format(label_map_pbtxt_fname), s)
+
+        # Set training batch_size.
+        s = re.sub('batch_size: [0-9]+',
+                  'batch_size: {}'.format(batch_size), s)
+
+        # Set training steps, num_steps
+        s = re.sub('num_steps: [0-9]+',
+                  'num_steps: {}'.format(NUM_STEPS), s)
+        
+        # Set number of classes num_classes.
+        s = re.sub('num_classes: [0-9]+',
+                  'num_classes: {}'.format(num_classes), s)
+        
+        #fine-tune checkpoint type
+        s = re.sub(
+            'fine_tune_checkpoint_type: "classification"', 'fine_tune_checkpoint_type: "{}"'.format('detection'), s)
+            
+        f.write(s)
+  
+    pipeline_file = 'research/deploy/pipeline_file.config'
+    model_dir = 'training/'
