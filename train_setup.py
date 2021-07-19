@@ -176,9 +176,9 @@ def get_num_classes(pbtxt_fname):
     return len(category_index.keys())
 
 if __name__ == '__main__':
-    test_record_fname = '/data/valid/Spaghetti.tfrecord'
-    train_record_fname = '/data/train/Spaghetti.tfrecord'
-    label_map_pbtxt_fname = '/data/train/Spaghetti_label_map.pbtxt'
+    test_record_fname = './data/valid/Spaghetti.tfrecord'
+    train_record_fname = './data/train/Spaghetti.tfrecord'
+    label_map_pbtxt_fname = './data/train/Spaghetti_label_map.pbtxt'
 
     ##change chosen model to deploy different models available in the TF2 object detection zoo
     
