@@ -178,7 +178,7 @@ def get_num_classes(pbtxt_fname):
 if __name__ == '__main__':
     test_record_fname = '/data/valid/Spaghetti.tfrecord'
     train_record_fname = '/data/train/Spaghetti.tfrecord'
-    label_map_pbtxt_fname = '/data/valid/Spaghetti_label_map.pbtxt'
+    label_map_pbtxt_fname = '/data/train/Spaghetti_label_map.pbtxt'
 
     ##change chosen model to deploy different models available in the TF2 object detection zoo
     
@@ -214,11 +214,11 @@ if __name__ == '__main__':
     num_classes=1
 
     print('writing custom configuration file')
-
+    print(pipeline_fname)
     with open(pipeline_fname) as f:
         s = f.read()
     with open('pipeline_file.config', 'w') as f:
-        
+        print("hello")
         # fine_tune_checkpoint
         s = re.sub('fine_tune_checkpoint: ".*?"',
                   'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
@@ -250,6 +250,3 @@ if __name__ == '__main__':
             'fine_tune_checkpoint_type: "classification"', 'fine_tune_checkpoint_type: "{}"'.format('detection'), s)
             
         f.write(s)
-  
-    pipeline_file = 'research/deploy/pipeline_file.config'
-    model_dir = 'training/'
