@@ -53,62 +53,62 @@ MODELS_CONFIG = {
         'model_name': 'ssd_mobilenet_v2_320x320_coco17_tpu-8',
         'base_pipeline_file': 'ssd_mobilenet_v2_320x320_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
     'SSD-MobileNet-V1-FPN-640': {
         'model_name': 'ssd_mobilenet_v1_fpn_640x640_coco17_tpu-8',
         'base_pipeline_file': 'ssd_mobilenet_v1_fpn_640x640_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_mobilenet_v1_fpn_640x640_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
     'SSD-MobileNet-V2-FPNlite-320': {
         'model_name': 'ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8',
         'base_pipeline_file': 'ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
     'SSD-MobileNet-V2-FPNlite-640': {
         'model_name': 'ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8',
         'base_pipeline_file': 'ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
     'SSD-ResNet50-V1-FPN-640': {
         'model_name': 'ssd_resnet50_v1_fpn_640x640_coco17_tpu-8',
         'base_pipeline_file': 'ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
     'SSD-ResNet50-V1-FPN-1024': {
         'model_name': 'ssd_resnet50_v1_fpn_1024x1024_coco17_tpu-8',
         'base_pipeline_file': 'ssd_resnet50_v1_fpn_1024x1024_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_resnet50_v1_fpn_1024x1024_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
         
     'SSD-ResNet101-V1-FPN-640': {
         'model_name': 'ssd_resnet101_v1_fpn_640x640_coco17_tpu-8',
         'base_pipeline_file': 'ssd_resnet101_v1_fpn_640x640_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_resnet101_v1_fpn_640x640_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
     'SSD-ResNet101-V1-FPN-1024': {
         'model_name': 'ssd_resnet101_v1_fpn_1024x1024_coco17_tpu-8',
         'base_pipeline_file': 'ssd_resnet101_v1_fpn_1024x1024_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_resnet101_v1_fpn_1024x1024_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
     'SSD-ResNet152-V1-FPN-640': {
         'model_name': 'ssd_resnet152_v1_fpn_640x640_coco17_tpu-8',
         'base_pipeline_file': 'ssd_resnet152_v1_fpn_640x640_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_resnet152_v1_fpn_640x640_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     },
     'SSD-ResNet152-V1-FPN-1024': {
         'model_name': 'ssd_resnet152_v1_fpn_1024x1024_coco17_tpu-8',
         'base_pipeline_file': 'ssd_resnet152_v1_fpn_1024x1024_coco17_tpu-8.config',
         'pretrained_checkpoint': 'ssd_resnet152_v1_fpn_1024x1024_coco17_tpu-8.tar.gz',
-        'batch_size': 16
+        'batch_size': 4
     }
 }
 
