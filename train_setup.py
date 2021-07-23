@@ -210,7 +210,7 @@ def generate(model):
     print('writing custom configuration file')
     with open(pipeline_fname) as f:
         s = f.read()
-    with open(save_location + '/' + 'pipeline_file.config', 'w') as f:
+    with open(model + '_pipeline_file.config', 'w') as f:
         # fine_tune_checkpoint
         s = re.sub('fine_tune_checkpoint: ".*?"',
                   'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
