@@ -201,7 +201,9 @@ def generate(model):
 
     #prepare
     pipeline_fname = save_location + '/' + base_pipeline_file
+    
     fine_tune_checkpoint = save_location + '/checkpoint/ckpt-0'
+    print(fine_tune_checkpoint)
     # num_classes = get_num_classes(label_map_pbtxt_fname)
     num_classes=1
 
