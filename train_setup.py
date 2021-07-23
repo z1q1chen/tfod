@@ -192,7 +192,7 @@ def generate(model):
         download_tar = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/' + pretrained_checkpoint
         tar_filename = wget.download(download_tar, out=save_location)
         tar = tarfile.open(f'{save_location}/{pretrained_checkpoint}')
-        tar.extractall(path=save_location)
+        tar.extractall(path='research/deploy/')
         tar.close()
     
     if not os.path.exists(os.path.join(save_location, base_pipeline_file)):
