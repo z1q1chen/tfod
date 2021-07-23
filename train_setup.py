@@ -20,7 +20,7 @@ from object_detection.utils import config_util
 from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
 
-CHOSEN_MODEL='SSD-ResNet152-V1-FPN-1024'
+
 NUM_STEPS = 40000 #The more steps, the longer the training. Increase if your loss function is still decreasing and validation metrics are increasing. 
 NUM_EVAL_STEPS = 500 #Perform evaluation after so many steps
 
@@ -175,27 +175,19 @@ def get_num_classes(pbtxt_fname):
     category_index = label_map_util.create_category_index(categories)
     return len(category_index.keys())
 
-if __name__ == '__main__':
+def generate(model):
     test_record_fname = './data/valid/Spaghetti.tfrecord'
     train_record_fname = './data/train/Spaghetti.tfrecord'
     label_map_pbtxt_fname = './data/train/Spaghetti_label_map.pbtxt'
 
-    ##change chosen model to deploy different models available in the TF2 object detection zoo
-    
-
-    #in this tutorial we implement the lightweight, smallest state of the art efficientdet model
-    #if you want to scale up tot larger efficientdet models you will likely need more compute!
-    # chosen_model = 'efficientdet-d0'
-    
+    model_name = MODELS_CONFIG[model]['model_name']
+    pretrained_checkpoint = MODELS_CONFIG[model]['pretrained_checkpoint']
+    base_pipeline_file = MODELS_CONFIG[model]['base_pipeline_file']
+    batch_size = MODELS_CONFIG[model]['batch_size'] #if you can fit a large batch in memory, it may speed up your training
 
     
-
-    model_name = MODELS_CONFIG[CHOSEN_MODEL]['model_name']
-    pretrained_checkpoint = MODELS_CONFIG[CHOSEN_MODEL]['pretrained_checkpoint']
-    base_pipeline_file = MODELS_CONFIG[CHOSEN_MODEL]['base_pipeline_file']
-    batch_size = MODELS_CONFIG[CHOSEN_MODEL]['batch_size'] #if you can fit a large batch in memory, it may speed up your training
-
-    save_location = 'research/deploy'
+    save_location = 'research/deploy/' + model_name
+    os.makedirs(save_location)
     if not os.path.exists(os.path.join(save_location, pretrained_checkpoint)):
         download_tar = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/' + pretrained_checkpoint
         tar_filename = wget.download(download_tar, out=save_location)
@@ -208,15 +200,15 @@ if __name__ == '__main__':
         config_filename = wget.download(download_config, out=save_location)
 
     #prepare
-    pipeline_fname = 'research/deploy/' + base_pipeline_file
-    fine_tune_checkpoint = 'research/deploy/' + model_name + '/checkpoint/ckpt-0'
+    pipeline_fname = save_location + '/' + base_pipeline_file
+    fine_tune_checkpoint = save_location + '/checkpoint/ckpt-0'
     # num_classes = get_num_classes(label_map_pbtxt_fname)
     num_classes=1
 
     print('writing custom configuration file')
     with open(pipeline_fname) as f:
         s = f.read()
-    with open('pipeline_file.config', 'w') as f:
+    with open(save_location + '/' + 'pipeline_file.config', 'w') as f:
         # fine_tune_checkpoint
         s = re.sub('fine_tune_checkpoint: ".*?"',
                   'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
@@ -233,6 +225,7 @@ if __name__ == '__main__':
 
         # Set training batch_size.
         s = re.sub('batch_size: [0-9]+',
+
                   'batch_size: {}'.format(batch_size), s)
 
         # Set training steps, num_steps
@@ -249,3 +242,80 @@ if __name__ == '__main__':
             
         f.write(s)
     print("Done")
+
+
+if __name__ == '__main__':
+    # test_record_fname = './data/valid/Spaghetti.tfrecord'
+    # train_record_fname = './data/train/Spaghetti.tfrecord'
+    # label_map_pbtxt_fname = './data/train/Spaghetti_label_map.pbtxt'
+
+    # ##change chosen model to deploy different models available in the TF2 object detection zoo
+    
+
+    # #in this tutorial we implement the lightweight, smallest state of the art efficientdet model
+    # #if you want to scale up tot larger efficientdet models you will likely need more compute!
+    # # chosen_model = 'efficientdet-d0'
+    # model_name = MODELS_CONFIG[CHOSEN_MODEL]['model_name']
+    # pretrained_checkpoint = MODELS_CONFIG[CHOSEN_MODEL]['pretrained_checkpoint']
+    # base_pipeline_file = MODELS_CONFIG[CHOSEN_MODEL]['base_pipeline_file']
+    # batch_size = MODELS_CONFIG[CHOSEN_MODEL]['batch_size'] #if you can fit a large batch in memory, it may speed up your training
+
+    # save_location = 'research/deploy/' + model_name
+    # if not os.path.exists(os.path.join(save_location, pretrained_checkpoint)):
+    #     download_tar = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/' + pretrained_checkpoint
+    #     tar_filename = wget.download(download_tar, out=save_location)
+    #     tar = tarfile.open(f'{save_location}/{pretrained_checkpoint}')
+    #     tar.extractall(path=save_location)
+    #     tar.close()
+    
+    # if not os.path.exists(os.path.join(save_location, base_pipeline_file)):
+    #     download_config = 'https://raw.githubusercontent.com/tensorflow/models/master/research/object_detection/configs/tf2/' + base_pipeline_file
+    #     config_filename = wget.download(download_config, out=save_location)
+
+    # #prepare
+    # pipeline_fname = save_location + '/' + base_pipeline_file
+    # fine_tune_checkpoint = save_location + '/' + '/checkpoint/ckpt-0'
+    # # num_classes = get_num_classes(label_map_pbtxt_fname)
+    # num_classes=1
+
+    # print('writing custom configuration file')
+    # with open(pipeline_fname) as f:
+    #     s = f.read()
+    # with open(save_location + '/' + 'pipeline_file.config', 'w') as f:
+    #     # fine_tune_checkpoint
+    #     s = re.sub('fine_tune_checkpoint: ".*?"',
+    #               'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
+        
+    #     # tfrecord files train and test.
+    #     s = re.sub(
+    #         '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/train)(.*?")', 'input_path: "{}"'.format(train_record_fname), s)
+    #     s = re.sub(
+    #         '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/val)(.*?")', 'input_path: "{}"'.format(test_record_fname), s)
+
+    #     # label_map_path
+    #     s = re.sub(
+    #         'label_map_path: ".*?"', 'label_map_path: "{}"'.format(label_map_pbtxt_fname), s)
+
+    #     # Set training batch_size.
+    #     s = re.sub('batch_size: [0-9]+',
+
+    #               'batch_size: {}'.format(batch_size), s)
+
+    #     # Set training steps, num_steps
+    #     s = re.sub('num_steps: [0-9]+',
+    #               'num_steps: {}'.format(NUM_STEPS), s)
+        
+    #     # Set number of classes num_classes.
+    #     s = re.sub('num_classes: [0-9]+',
+    #               'num_classes: {}'.format(num_classes), s)
+        
+    #     #fine-tune checkpoint type
+    #     s = re.sub(
+    #         'fine_tune_checkpoint_type: "classification"', 'fine_tune_checkpoint_type: "{}"'.format('detection'), s)
+            
+    #     f.write(s)
+    # print("Done")
+
+    for name in MODELS_CONFIG.keys():
+        # CHOSEN_MODEL='SSD-ResNet152-V1-FPN-1024'
+        generate(name)
