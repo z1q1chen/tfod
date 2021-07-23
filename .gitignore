@@ -134,3 +134,6 @@ setup.py
 deploy
 training
 pipeline_file.config
+*.config
+*.tmp
+~$od_result.docx
