@@ -36,11 +36,11 @@ def load_image_into_numpy_array(path):
 
 
 
-filenames = list(pathlib.Path('/content/training/').glob('*.index'))
+filenames = list(pathlib.Path('/training_SSD-ResNet101-V1-FPN-640/').glob('*.index'))
 
 filenames.sort()
 print(filenames)
-
+pipeline_file = 'SSD-ResNet101-V1-FPN-640_pipeline_file.config'
 #recover our saved model
 pipeline_config = pipeline_file
 #generally you want to put the last ckpt from training in here
@@ -84,7 +84,7 @@ label_map_dict = label_map_util.get_label_map_dict(label_map, use_display_name=T
 
 import random
 
-TEST_IMAGE_PATHS = glob.glob('/content/test/test/*.jpg')
+TEST_IMAGE_PATHS = glob.glob('test/*.jpg')
 image_path = random.choice(TEST_IMAGE_PATHS)
 image_np = load_image_into_numpy_array(image_path)
 
