@@ -8,17 +8,17 @@ found in object_detection/protos/pipeline.proto. At a high level, the config
 file is split into 5 parts:
 
 1. The `model` configuration. This defines what type of model will be trained
-(ie. meta-architecture, feature extractor).
+   (ie. meta-architecture, feature extractor).
 2. The `train_config`, which decides what parameters should be used to train
-model parameters (ie. SGD parameters, input preprocessing and feature extractor
-initialization values).
+   model parameters (ie. SGD parameters, input preprocessing and feature extractor
+   initialization values).
 3. The `eval_config`, which determines what set of metrics will be reported for
-evaluation.
+   evaluation.
 4. The `train_input_config`, which defines what dataset the model should be
-trained on.
+   trained on.
 5. The `eval_input_config`, which defines what dataset the model will be
-evaluated on. Typically this should be different than the training input
-dataset.
+   evaluated on. Typically this should be different than the training input
+   dataset.
 
 A skeleton configuration file is shown below:
 
@@ -37,6 +37,7 @@ train_input_reader: {
 
 eval_config: {
   (... Add eval_config here...)
+  'pascal_voc_detection_metrics'
 }
 
 eval_input_reader: {
@@ -85,7 +86,7 @@ feature pyramid network (FPN) head.
 Regardless of the model architecture, you'll need to understand the following
 anchor box concepts:
 
-  +  **Scale**: This defines the variety of anchor box sizes. Each box size is
+- **Scale**: This defines the variety of anchor box sizes. Each box size is
   defined as a proportion of the original image size (for SSD models) or as a
   factor of the filter's stride length (for FPN). The number of different sizes
   is defined using a range of "scales" (relative to image size) or "levels" (the
@@ -94,7 +95,7 @@ anchor box concepts:
   value, while `max_scale` and `max_level` specify the largest objects to
   detect.
 
-  +  **Aspect ratio**: This is the height/width ratio for the anchor boxes.  For
+- **Aspect ratio**: This is the height/width ratio for the anchor boxes. For
   example, the `aspect_ratio` value of `1.0` creates a square, and `2.0` creates
   a 1:2 rectangle (landscape orientation). You can define as many aspects as you
   want and each one is repeated at all anchor box scales.
@@ -103,7 +104,6 @@ Beware that increasing the total number of anchor boxes will exponentially
 increase computation costs. Whereas generating fewer anchors that have a higher
 chance to overlap with ground truth will both improve accuracy and reduce
 computation costs.
-
 
 **Single Shot Detector (SSD) full model:**
 
@@ -157,7 +157,6 @@ model {
 ```
 
 For more details, see [`multiscale_anchor_generator.proto`](https://github.com/tensorflow/models/blob/master/research/object_detection/protos/multiscale_anchor_generator.proto).
-
 
 ## Defining Inputs
 
