@@ -137,3 +137,5 @@ pipeline_file.config
 *.config
 *.tmp
 ~$od_result.docx
+test_results*
+trained_models*
