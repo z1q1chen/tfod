@@ -139,3 +139,5 @@ pipeline_file.config
 ~$od_result.docx
 test_results*
 trained_models*
+models*
+z.sh

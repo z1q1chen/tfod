@@ -187,7 +187,8 @@ def generate(model):
 
     
     save_location = 'research/deploy/' + model_name
-    os.makedirs(save_location)
+    if not os.path.exists(save_location):
+        os.makedirs(save_location)
     if not os.path.exists(os.path.join(save_location, pretrained_checkpoint)):
         download_tar = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/' + pretrained_checkpoint
         tar_filename = wget.download(download_tar, out=save_location)
@@ -210,7 +211,15 @@ def generate(model):
     print('writing custom configuration file')
     with open(pipeline_fname) as f:
         s = f.read()
-    with open(model + '_pipeline_file.config', 'w') as f:
+    
+    model_path = f'models/{model}'
+    if not os.path.exists(model_path):
+        os.makedirs(model_path)
+    if not os.path.exists(f'{model_path}/model'):
+        os.makedirs(f'{model_path}/model')
+    if not os.path.exists(f'{model_path}/checkpoint'):
+        os.makedirs(f'{model_path}/checkpoint')
+    with open(f'{model_path}/pipeline.config', 'w') as f:
         # fine_tune_checkpoint
         s = re.sub('fine_tune_checkpoint: ".*?"',
                   'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
