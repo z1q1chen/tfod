@@ -17,6 +17,6 @@ for model in $models; do
     python research/object_detection/model_main_tf2.py \
         --pipeline_config_path="models/${model}/pipeline.config" \
         --model_dir="models/${model}/model" \
-        --checkpoint_dir="models/${model}/checkpoint" \
+        --checkpoint_dir="models/${model}/model" \
         --alsologtostderr
 done
