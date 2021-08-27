@@ -219,40 +219,47 @@ def generate(model):
         os.makedirs(f'{model_path}/model')
     if not os.path.exists(f'{model_path}/checkpoint'):
         os.makedirs(f'{model_path}/checkpoint')
-    with open(f'{model_path}/pipeline.config', 'w') as f:
-        # fine_tune_checkpoint
-        s = re.sub('fine_tune_checkpoint: ".*?"',
-                  'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
-        
-        # tfrecord files train and test.
-        s = re.sub(
-            '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/train)(.*?")', 'input_path: "{}"'.format(train_record_fname), s)
-        s = re.sub(
-            '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/val)(.*?")', 'input_path: "{}"'.format(test_record_fname), s)
-
-        # label_map_path
-        s = re.sub(
-            'label_map_path: ".*?"', 'label_map_path: "{}"'.format(label_map_pbtxt_fname), s)
-
-        # Set training batch_size.
-        s = re.sub('batch_size: [0-9]+',
-
-                  'batch_size: {}'.format(batch_size), s)
-
-        # Set training steps, num_steps
-        s = re.sub('num_steps: [0-9]+',
-                  'num_steps: {}'.format(NUM_STEPS), s)
-        
-        # Set number of classes num_classes.
-        s = re.sub('num_classes: [0-9]+',
-                  'num_classes: {}'.format(num_classes), s)
-        
-        #fine-tune checkpoint type
-        s = re.sub(
-            'fine_tune_checkpoint_type: "classification"', 'fine_tune_checkpoint_type: "{}"'.format('detection'), s)
+    for lr in [(0.01, 0.04), (0.02, 0.08), (0.001, 0.004), (0.002, 0.008), (0.003, 0.012)]:
+        warmup_learning_rate = lr[0]
+        learning_rate_base = lr[1]
+        with open(f'{model_path}/pipeline_{learning_rate_base}.config', 'w') as f:
+            # fine_tune_checkpoint
+            s = re.sub('learning_rate_base: ".*?"',
+                    'learning_rate_base: "{}"'.format(learning_rate_base), s)
+            s = re.sub('warmup_learning_rate: ".*?"',
+                    'warmup_learning_rate: "{}"'.format(warmup_learning_rate), s)
             
-        f.write(s)
-    print("Done")
+            s = re.sub('fine_tune_checkpoint: ".*?"',
+                    'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint), s)
+            # tfrecord files train and test.
+            s = re.sub(
+                '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/train)(.*?")', 'input_path: "{}"'.format(train_record_fname), s)
+            s = re.sub(
+                '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/val)(.*?")', 'input_path: "{}"'.format(test_record_fname), s)
+
+            # label_map_path
+            s = re.sub(
+                'label_map_path: ".*?"', 'label_map_path: "{}"'.format(label_map_pbtxt_fname), s)
+
+            # Set training batch_size.
+            s = re.sub('batch_size: [0-9]+',
+
+                    'batch_size: {}'.format(batch_size), s)
+
+            # Set training steps, num_steps
+            s = re.sub('num_steps: [0-9]+',
+                    'num_steps: {}'.format(NUM_STEPS), s)
+            
+            # Set number of classes num_classes.
+            s = re.sub('num_classes: [0-9]+',
+                    'num_classes: {}'.format(num_classes), s)
+            
+            #fine-tune checkpoint type
+            s = re.sub(
+                'fine_tune_checkpoint_type: "classification"', 'fine_tune_checkpoint_type: "{}"'.format('detection'), s)
+                
+            f.write(s)
+        print("Done")
 
 
 if __name__ == '__main__':
